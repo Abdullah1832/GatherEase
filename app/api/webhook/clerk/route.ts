@@ -6,6 +6,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
+  console.log("⚡ Clerk webhook hit");
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
@@ -71,7 +72,8 @@ export async function POST(req: Request) {
     const newUser = await createUser(user);
 
     if (newUser) {
-      (await clerkClient()).users.updateUserMetadata(id, {
+      const client = await clerkClient();
+      await client.users.updateUserMetadata(id, {
         publicMetadata: {
           userId: newUser._id,
         },
