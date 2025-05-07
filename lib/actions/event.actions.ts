@@ -1,3 +1,5 @@
+"use server";
+
 import { CreateEventParams } from "@/types";
 import User from "@/lib/database/models/user.model";
 import { connectToDatabase } from "../database";
