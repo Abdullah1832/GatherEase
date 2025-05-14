@@ -29,6 +29,7 @@ export type CreateEventParams = {
     price: string;
     isFree: boolean;
     url: string;
+    category: string;
   };
   path: string;
 };
@@ -47,6 +48,7 @@ export type UpdateEventParams = {
     price: string;
     isFree: boolean;
     url: string;
+    category: string;
   };
   path: string;
 };
