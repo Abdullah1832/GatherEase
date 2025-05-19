@@ -52,15 +52,21 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
 export const createOrder = async (order: CreateOrderParams) => {
   try {
     await connectToDatabase();
+    console.log("Creating order with data:", order);
+
+    if (!ObjectId.isValid(order.eventId) || !ObjectId.isValid(order.buyerId)) {
+      throw new Error("Invalid eventId or buyerId");
+    }
 
     const newOrder = await Order.create({
       ...order,
-      event: order.eventId,
-      buyer: order.buyerId,
+      event: new ObjectId(order.eventId),
+      buyer: new ObjectId(order.buyerId),
     });
 
     return JSON.parse(JSON.stringify(newOrder));
   } catch (error) {
+    console.error("Error in createOrder:", error);
     handleError(error);
   }
 };

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { createOrder } from "@/lib/actions/order.actions";
 
 export async function POST(request: Request) {
+  console.log("Stripe webhook received");
   const body = await request.text();
 
   const sig = request.headers.get("stripe-signature") as string;
@@ -22,6 +23,11 @@ export async function POST(request: Request) {
   // CREATE
   if (eventType === "checkout.session.completed") {
     const { id, amount_total, metadata } = event.data.object;
+    console.log("Processing checkout.session.completed", {
+      id,
+      amount_total,
+      metadata,
+    });
 
     const order = {
       stripeId: id,
@@ -31,8 +37,19 @@ export async function POST(request: Request) {
       createdAt: new Date(),
     };
 
-    const newOrder = await createOrder(order);
-    return NextResponse.json({ message: "OK", order: newOrder });
+    console.log("Order data to be created:", order);
+
+    try {
+      const newOrder = await createOrder(order);
+      console.log("Order created successfully:", newOrder);
+      return NextResponse.json({ message: "OK", order: newOrder });
+    } catch (error) {
+      console.error("Error creating order:", error);
+      return NextResponse.json(
+        { message: "Order creation failed", error },
+        { status: 500 }
+      );
+    }
   }
 
   return new Response("", { status: 200 });
