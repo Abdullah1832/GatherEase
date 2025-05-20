@@ -34,11 +34,16 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
   const [newCategory, setNewCategory] = useState("");
 
   const handleAddCategory = () => {
-    createCategory({
-      categoryName: newCategory.trim(),
-    }).then((category) => {
-      setCategories((prevState) => [...prevState, category]);
-    });
+    if (!newCategory.trim()) {
+      alert("category cannot be empty");
+      window.location.reload();
+    } else {
+      createCategory({
+        categoryName: newCategory.trim(),
+      }).then((category) => {
+        setCategories((prevState) => [...prevState, category]);
+      });
+    }
   };
 
   useEffect(() => {
